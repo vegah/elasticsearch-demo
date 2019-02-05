@@ -1,0 +1,25 @@
+{
+  "name": "elasticsearch-demo",
+  "version": "1.0.0",
+  "description": "Download data for demo here:   https://www.kaggle.com/zynicide/wine-reviews#winemag-data-130k-v2.csv",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vegah/elasticsearch-demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vegah/elasticsearch-demo/issues"
+  },
+  "homepage": "https://github.com/vegah/elasticsearch-demo#readme",
+  "dependencies": {
+    "aws-sdk": "^2.396.0",
+    "elasticsearch": "^15.3.1",
+    "papaparse": "^4.6.3",
+    "serverless-finch": "^2.3.2"
+  }
+}

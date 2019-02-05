@@ -1,0 +1,58 @@
+service: elasticsearch-demo
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+  environment:
+    elasticserver: 
+      Fn::GetAtt:
+        - elasticsearch
+        - DomainEndpoint
+functions:
+  readcsv:
+    handler: handler.readcsv
+    events:
+      - s3: elasticdemo-s3-${opt:stage}
+        event: s3:ObjectCreated:*
+plugins:
+  - serverless-finch
+custom:
+  client:
+    bucketName: elasticdemo-s3-${opt:stage}
+    distributionFolder: data    
+resources:
+  Resources:
+    elasticsearch:
+      Type: AWS::Elasticsearch::Domain
+      Properties: 
+      # This is of course just stupid.  This opens the instance to the internet, so everyone can access it
+      # Do not use this with anything
+      # It is meant as an example.
+        AccessPolicies:
+          Version: "2012-10-17"
+          Statement: 
+            -
+              Effect: "Allow"
+              Principal:
+                AWS: 
+                  - "*"
+              Action: 
+                - "es.*"
+              Resource: "*"
+        DomainName: elasticdemo-${opt:stage}
+        EBSOptions:
+          EBSEnabled: true
+          VolumeType: gp2
+          VolumeSize: 30
+        ElasticsearchClusterConfig:
+          InstanceCount: 3
+          InstanceType: m4.large.elasticsearch
+        ElasticsearchVersion: 6.4
+
+  Outputs:
+     Elasticserver:
+      Value: 
+        Fn::GetAtt:
+          - elasticsearch
+          - DomainEndpoint
+

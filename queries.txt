@@ -1,0 +1,26 @@
+GET /wine/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+
+GET /wine/_search
+{
+  "size": 0,
+  "aggs": {
+      "avg_points" : { "avg" : { "field" : "points" } },
+    "group_by_state": {
+      "aggs": {
+        "avg_points" : { "avg" : { "field" : "points" } },
+        "avg_price" : { "avg" : { "field" : "price" } }        
+      },
+      "terms": {
+        "field": "province.keyword",
+        "size": 9999
+      }
+    }
+  }
+}
