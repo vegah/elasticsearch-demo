@@ -3,6 +3,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   region: eu-west-1
+  timeout: 200
   environment:
     elasticserver: 
       Fn::GetAtt:
@@ -12,13 +13,13 @@ functions:
   readcsv:
     handler: handler.readcsv
     events:
-      - s3: elasticdemo-s3-${opt:stage}
+      - s3: elastic-demo-s3-${opt:stage}
         event: s3:ObjectCreated:*
 plugins:
   - serverless-finch
 custom:
   client:
-    bucketName: elasticdemo-s3-${opt:stage}
+    bucketName: elastic-demo-s3-${opt:stage}
     distributionFolder: data    
 resources:
   Resources:
@@ -37,9 +38,16 @@ resources:
                 AWS: 
                   - "*"
               Action: 
-                - "es.*"
-              Resource: "*"
-        DomainName: elasticdemo-${opt:stage}
+                - "es:*"
+              Resource: 
+                Fn::Join:
+                  - ':'
+                  -
+                    - 'arn:aws:es'
+                    - Ref: 'AWS::Region'
+                    - Ref: 'AWS::AccountId'
+                    - 'domain/elastic-demo-${opt:stage}/*'              
+        DomainName: elastic-demo-${opt:stage}
         EBSOptions:
           EBSEnabled: true
           VolumeType: gp2
